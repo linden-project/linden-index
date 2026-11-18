@@ -1,10 +1,11 @@
 ---
 # linden-index-wuqz
 title: Package lindexer in the flake and document installs
-status: todo
+status: in-progress
 type: epic
+priority: normal
 created_at: 2026-11-18T12:40:34Z
-updated_at: 2026-11-18T12:40:34Z
+updated_at: 2026-11-18T12:45:14Z
 parent: linden-index-qrzv
 ---
 
