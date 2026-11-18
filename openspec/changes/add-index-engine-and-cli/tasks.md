@@ -50,7 +50,7 @@
 
 ## 7. Consumers
 
-- [ ] 7.1 Tag `v0.1.0` so `linny-mcp-server` and `linny.vim` can pin it.
-- [ ] 7.2 Report the tag to the `linny-mcp-server` change
+- [x] 7.1 Tag `v0.1.0` so `linny-mcp-server` and `linny.vim` can pin it.
+- [x] 7.2 Report the tag to the `linny-mcp-server` change
       `extract-linden-index-module` and the `linny.vim` change
       `replace-hugo-with-lindexer`.
