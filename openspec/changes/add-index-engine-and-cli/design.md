@@ -29,6 +29,7 @@ Non-goals:
 index/          public engine: Build, Emit, Graph, BuildReport, Store
 hugoref/        embedded reference site, used by verify --hugo
 cmd/lindexer/   CLI
+corpus/         synthetic notebook generator for tests and fixtures
 internal/buildinfo/  version stamped by ldflags
 ```
 

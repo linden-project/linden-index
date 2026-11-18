@@ -9,6 +9,8 @@
       corpus generator covers them.
 - [x] 1.4 Copy `internal/buildinfo` to `internal/buildinfo` here.
 - [x] 1.5 `go build ./...` and `go test ./...` with the copied suite.
+- [x] 1.6 Export the synthetic corpus generator as a public `corpus` package so
+      `linny-mcp-server` tests can import it.
 
 ## 2. Format version
 

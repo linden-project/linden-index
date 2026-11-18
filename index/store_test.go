@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 // populatedStore generates a synthetic corpus, builds the graph, and returns an

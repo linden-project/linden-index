@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 // emitCorpus generates a corpus and emits its index into a fresh dir.

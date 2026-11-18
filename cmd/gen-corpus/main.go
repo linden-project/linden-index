@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 func main() {

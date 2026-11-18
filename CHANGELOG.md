@@ -13,4 +13,5 @@ Keep a Changelog, and the project uses semantic versioning.
 - The `lindexer` CLI with `build`, `search`, `verify`, `watch`, and `version`.
 - `index_format_version` in `_indexer_info.json`.
 - The embedded Hugo reference site for `verify --hugo`.
+- A public `corpus` package so other projects can generate test notebooks.
 - Nix package, flake checks, goreleaser config, and the release script.

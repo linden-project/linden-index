@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/linden-project/linden-index/corpus"
 	"github.com/linden-project/linden-index/hugoref"
 	"github.com/linden-project/linden-index/index"
-	"github.com/linden-project/linden-index/internal/corpus"
 )
 
 // TestHugoRoundTrip runs the real Hugo reference indexer over a synthetic corpus

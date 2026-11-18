@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 // buildCorpus generates a synthetic corpus, builds and emits the index, and

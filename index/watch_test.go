@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 func TestDebounceCoalescesBurst(t *testing.T) {

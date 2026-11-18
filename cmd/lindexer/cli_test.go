@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/linden-project/linden-index/internal/corpus"
+	"github.com/linden-project/linden-index/corpus"
 )
 
 // TestBuildAndSearchCLI exercises the build + search commands end-to-end,
