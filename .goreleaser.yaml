@@ -1,0 +1,37 @@
+version: 2
+
+project_name: lindexer
+
+builds:
+  - id: lindexer
+    main: ./cmd/lindexer
+    binary: lindexer
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/linden-project/linden-index/internal/buildinfo.Version={{ .Version }}
+
+archives:
+  - formats:
+      - tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: linden-project
+    name: linden-index

@@ -1,0 +1,119 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"github.com/linden-project/linden-index/internal/corpus"
+)
+
+// TestBuildAndSearchCLI exercises the build + search commands end-to-end,
+// covering buildCmd, persistStore, and searchCmd.
+func TestBuildAndSearchCLI(t *testing.T) {
+	root := t.TempDir()
+	if err := corpus.Generate(root, corpus.Options{Seed: 4, Count: 20, EnableEdgeCases: true}); err != nil {
+		t.Fatal(err)
+	}
+	state := filepath.Join(root, "state")
+	index := filepath.Join(root, "lindenIndex")
+
+	var out, errOut bytes.Buffer
+	code := Run([]string{"lindexer", "build", "--corpus", root, "--index", index, "--state-dir", state}, &out, &errOut)
+	if code != 0 {
+		t.Fatalf("build exit=%d stderr=%q", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "indexed") {
+		t.Fatalf("build output = %q", out.String())
+	}
+
+	out.Reset()
+	errOut.Reset()
+	code = Run([]string{"lindexer", "search", "--state-dir", state, "--limit", "5", "brain"}, &out, &errOut)
+	if code != 0 {
+		t.Fatalf("search exit=%d stderr=%q", code, errOut.String())
+	}
+	// "brain" appears in generated bodies; expect at least one hit line.
+	if strings.TrimSpace(out.String()) == "" {
+		t.Fatalf("search produced no output")
+	}
+}
+
+func TestSearchRequiresStateDir(t *testing.T) {
+	var out, errOut bytes.Buffer
+	if code := Run([]string{"lindexer", "search", "brain"}, &out, &errOut); code != 2 {
+		t.Fatalf("search without --state-dir exit=%d, want 2", code)
+	}
+}
+
+func TestVerifyCLIMatches(t *testing.T) {
+	root := t.TempDir()
+	if err := corpus.Generate(root, corpus.Options{Seed: 6, Count: 15, EnableEdgeCases: true}); err != nil {
+		t.Fatal(err)
+	}
+	ref := filepath.Join(root, "reference-index")
+
+	var out, errOut bytes.Buffer
+	// Emit a reference index from the same corpus.
+	if code := Run([]string{"lindexer", "build", "--corpus", root, "--index", ref}, &out, &errOut); code != 0 {
+		t.Fatalf("build ref exit=%d: %s", code, errOut.String())
+	}
+	out.Reset()
+	errOut.Reset()
+	// verify our freshly-built index against that reference => no drift.
+	if code := Run([]string{"lindexer", "verify", "--corpus", root, "--reference", ref}, &out, &errOut); code != 0 {
+		t.Fatalf("verify exit=%d, want 0; stdout=%q stderr=%q", code, out.String(), errOut.String())
+	}
+	if !strings.Contains(out.String(), "no discrepancies") {
+		t.Fatalf("verify output = %q", out.String())
+	}
+}
+
+func TestVerifyRequiresReferenceOrHugo(t *testing.T) {
+	var out, errOut bytes.Buffer
+	if code := Run([]string{"lindexer", "verify", "--corpus", "."}, &out, &errOut); code != 2 {
+		t.Fatalf("verify without --reference/--hugo exit=%d, want 2", code)
+	}
+	if !strings.Contains(errOut.String(), "--hugo") {
+		t.Fatalf("expected hint mentioning --hugo, got %q", errOut.String())
+	}
+}
+
+func TestWatchRequiresStateDir(t *testing.T) {
+	var out, errOut bytes.Buffer
+	if code := Run([]string{"lindexer", "watch", "--corpus", "."}, &out, &errOut); code != 2 {
+		t.Fatalf("watch without --state-dir exit=%d, want 2", code)
+	}
+}
+
+func TestWatchCLIInitialBuild(t *testing.T) {
+	root := t.TempDir()
+	if err := corpus.Generate(root, corpus.Options{Seed: 5, Count: 10}); err != nil {
+		t.Fatal(err)
+	}
+	state := filepath.Join(root, "state")
+	indexRoot := filepath.Join(root, "lindenIndex")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	var stdout, stderr bytes.Buffer
+	code := watchCmdContext(ctx, []string{
+		"--corpus", root, "--state-dir", state, "--index", indexRoot,
+	}, &stdout, &stderr)
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr = %q", code, stderr.String())
+	}
+	if !strings.Contains(stdout.String(), "refreshed index") {
+		t.Fatalf("missing initial build output: %q", stdout.String())
+	}
+	if _, err := os.Stat(filepath.Join(state, storeFile)); err != nil {
+		t.Fatalf("state store not written: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(indexRoot, "_index_taxonomies.json")); err != nil {
+		t.Fatalf("index tree not written: %v", err)
+	}
+}

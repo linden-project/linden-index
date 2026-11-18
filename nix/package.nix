@@ -11,7 +11,7 @@ buildGoModule {
       !(lib.elem base [ ".git" ".jj" ".direnv" "result" ".beans" "openspec" "docs" "dist" "testdata-gen" ]);
   };
 
-  vendorHash = lib.fakeHash;
+  vendorHash = "sha256-bJr7Z5q1qDCswS876IjDNxaf3qDcz0I0ScJ/f5w/Buo=";
 
   subPackages = [ "cmd/lindexer" ];
 
